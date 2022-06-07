@@ -1,0 +1,934 @@
+﻿<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>飞机大战</title>
+	</head>
+    <style>
+    	body{
+    		background-image:url("images/background.png")
+    	}
+    	#p{
+    		padding: 5px;
+    		margin: 6px;
+    	    border-radius: 15px
+    	}
+    </style> 
+	<body>
+		<span id="aa" style="font-size: 200%">商城                                                                   </span>
+		<span id="many" style="font-size: 200%">金币                                                                   </span>
+		<span id="jing" style="font-size: 200%">等级：0                                 </span><br><br><br><br><br>
+		<img src = "images/jiao.png" id="img">
+		<div id="stage" style="margin: 0 auto; width: 480px; height: 650px; text-align: center; vertical-align: middle" >
+			<canvas id="canvas" style="border:0px solid red;" width="480" height="650">
+				不支持画板对象
+			</canvas>
+		</div>
+		<a href="../../网站/game.html" style="color:skyblue; font-size:80px">回到首页</a>
+		<script>
+		//→←↑↓
+			var canvas = document.getElementById('canvas');
+			var ctx = canvas.getContext('2d');
+
+			var background = new Image();
+			background.src = "images/background.png";
+			
+			var shang = document.getElementById("aa")
+            var many1 = document.getElementById("many")
+            var jing1 = document.getElementById("jing")
+            
+			var sky = new Sky();
+
+			var e1 = [];
+			e1[0] = new Image();
+			e1[0].src = "images/enemy1.png";
+			e1[1] = new Image();
+			e1[1].src = "images/enemy1_down1.png";
+			e1[2] = new Image();
+			e1[2].src = "images/enemy1_down2.png";
+			e1[3] = new Image();
+			e1[3].src = "images/enemy1_down3.png";
+			e1[4] = new Image();
+			e1[4].src = "images/enemy1_down4.png";
+
+			var e2 = [];
+			e2[0] = new Image();
+			e2[0].src = "images/enemy2.png";
+			e2[1] = new Image();
+			e2[1].src = "images/enemy2_down1.png";
+			e2[2] = new Image();
+			e2[2].src = "images/enemy2_down2.png";
+			e2[3] = new Image();
+			e2[3].src = "images/enemy2_down3.png";
+			e2[4] = new Image();
+			e2[4].src = "images/enemy2_down4.png";
+
+			var e3 = [];
+			e3[0] = new Image();
+			e3[0].src = "images/enemy3_n1.png";
+			e3[1] = new Image();
+			e3[1].src = "images/enemy3_n2.png";
+			e3[2] = new Image();
+			e3[2].src = "images/enemy3_down1.png";
+			e3[3] = new Image();
+			e3[3].src = "images/enemy3_down2.png";
+			e3[4] = new Image();
+			e3[4].src = "images/enemy3_down3.png";
+			e3[5] = new Image();
+			e3[5].src = "images/enemy3_down4.png";
+			e3[6] = new Image();
+			e3[6].src = "images/enemy3_down5.png";
+			e3[7] = new Image();
+			e3[7].src = "images/enemy3_down6.png";
+
+			var h = [];
+			h[0] = new Image();
+			h[0].src = "images/hero1.png";
+			h[1] = new Image();
+			h[1].src = "images/hero2.png";
+			h[2] = new Image();
+			h[2].src = "images/hero_blowup_n1.png";
+			h[3] = new Image();
+			h[3].src = "images/hero_blowup_n2.png";
+			h[4] = new Image();
+			h[4].src = "images/hero_blowup_n3.png";
+			h[5] = new Image();
+			h[5].src = "images/hero_blowup_n4.png";
+
+			var copyright = new Image();
+			copyright.src = "images/shoot_copyright.png";
+
+			var pause = new Image();
+			pause.src = "images/game_pause_nor.png";
+
+			var b = [];
+			b[0] = new Image();
+			b[0].src = "images/bullet1.png";
+			b[1] = new Image();
+			b[1].src = "images/bullet2.png";
+
+			var u = [];
+			u[0] = new Image();
+			u[0].src = "images/ufo1.png";
+         
+            var u1 = [];
+			u1[0] = new Image();
+			u1[0].src = "images/ufo2.png";
+			
+			var heart = [];
+			heart[0] = new Image();
+			heart[0].src = "images/heart.png"
+			
+			var b1 = [];
+			b1[0] = new Image();
+			b1[0].src = "images/bomb1.png"
+			
+			var wudi = new Image()
+			wudi.src = "images/wu.png"
+			
+			var ufo = [];
+			var ufo1 = []
+			var enemies = [];
+			var hero = new Hero(0, 0, 99, 124, 1, h, 2);
+			var bullets = [];
+			var bomb = [];
+			var score = 0;
+			var heroes = 3;
+			var over1 = 0;
+            var ms = prompt("请输入死亡复活毫秒数(不输默认为1000毫秒)")-0
+            ms = ms/10
+            var moveMove = prompt("输入键盘控制英雄机的速度(不输默认为12)")-0;
+            var img = document.getElementById("img")
+            var many = 0;
+            var jing = 0;
+            var deng = 0;
+            var i1 = 0;
+            var i2 = 0;
+            var i3 = 0;
+            var i4 = 0;
+            var i5 = 0;
+            var i6 = 0;
+            var jing2 = 80
+            var a = true;
+            
+			var START = 1;
+			var RUNNING = 2;
+			var PAUSE = 3;
+			var GAME_OVER = 4;
+			var TUTORIAL = 5;
+			var SHANG = 7;
+			var state = START;
+			var TUTORIALRUNNING = 8;
+			var MANY = 9
+			var JINGYAN = 10;
+			var tutorial;
+             
+			setInterval(function() {
+				controlState(ctx);
+				xie(ctx);
+			}, 10);
+            
+            function xie(ctx){
+            	many1.innerHTML = "金币:"+many+"                           "
+				jing1.innerHTML = "等级"+deng+",此等级已赚"+jing+"，升级还需"+(jing2-jing)+"积分                                            "
+            }
+			function controlState(ctx) {
+				
+				switch(state) {
+					case JINGYAN:
+					
+					if(jing>=jing2){
+						deng++
+						jing = 0;
+						jing2 += 20;
+					}
+					
+						over1++;
+						if(over1>ms){
+							jing += score/2;
+							state = START;
+							over1 = 0;
+							i3 = 0;
+					heroes = 4
+						}
+					break
+					case MANY:
+					/*if(i6<1){
+						alert(many)
+						i6++
+					}*/
+					many1.innerHTML = "金币:"+many
+					state = START
+					break;
+					case START:
+					a = true;
+						sky.paint(ctx);
+						sky.step();
+						var x = 20;
+						var y = 130;
+						ctx.drawImage(copyright, x, y);
+						score = 0
+						i5 = 0
+						// i6  = 0;
+						break;
+					case RUNNING:
+					i6 = 0
+						paintComponent(ctx);
+						sky.step();
+						componentStep();
+						componentEnter();
+						hero.shoot();
+						checkHit();
+						deleteComponent();
+						var tutorial;
+						if(i3<300){
+							heroes = 3;
+							ctx.drawImage(wudi,hero.x+38,hero.y+35)
+							i3++
+						}
+						i5 = 0
+						break;
+					case PAUSE:
+						paintComponent(ctx);
+						sky.step();
+						checkHit();
+						ctx.drawImage(pause, 0, 0);
+						break;
+					case GAME_OVER: 
+					a = false;
+					if(i5<1){
+						i5++
+						i4++
+					}
+					if(i6<1){
+						i6++
+						many+=score
+					}
+						paintComponent(ctx);
+						sky.step();
+						var x = 480 / 2 - 245 / 2;
+						var y = 852 * (1 - 0.6);
+						ctx.font = "40px 微软雅黑";
+						ctx.fillStyle = "black"
+						ctx.fillText("GAME OVER", x, y);
+						if(score>100000){
+							ctx.font = "30px 楷体_GB2312";
+						}else if(score>10000){
+							ctx.font = "40px 楷体_GB2312";
+						}else if(score>1000){
+							ctx.font = "52px 楷体_GB2312";
+						}else if(score>100){
+							ctx.font = "60px 楷体_GB2312";
+						}else if(score>10){
+							ctx.font = "70px 楷体_GB2312";
+						}else{
+							ctx.font = "80px 楷体_GB2312";
+						}
+						if(over1%2==0){
+							ctx.fillStyle = "black"
+						}else if(over1%3==0){
+							ctx.fillStyle = "green"
+						}else{
+							ctx.fillStyle = "white"
+						}
+						ctx.fillText("分数:"+score,x,y-80)
+						over1++;
+						state = JINGYAN;
+						if(ms==0){
+							ms=100
+						}
+						/*if(over1>=ms){
+					state = START;
+					heroes = 4
+					over1 = 0
+					i3 = 0;
+					
+					
+				}*/break;
+						document.onkeydown = function(e){
+            		switch(e.keyCode){
+            			case 32:
+            			/*paintComponent(ctx);
+						sky.step();
+						ctx.drawImage(pause, 0, 0);*/
+						state = PAUSE;
+            		}
+            	}
+            	break;
+            	case TUTORIAL:
+            	if(i1<1){
+            		alert("欢迎来到教程")
+            		alert("首先来学习控制")
+            		alert("请按左右键操控左右，用上下键操控上下,也可以用鼠标控制（鼠标在哪飞机就在哪）")
+            				a = true;
+            				alert("蓝色的它可以让子弹变为四发，有0～4次机会")
+            				alert("红色的是全屏敌飞机清空，生命加0.5-1.5，子弹变为五发，有200次机会,子弹间隔30毫秒，否则一发")
+            				alert("看看机器操控的，点击可跳过")
+            				state = TUTORIALRUNNING;
+            				tutorial = TUTORIALRUNNING;
+            		i1++
+            	}
+            	break
+            	case SHANG:
+            	if(shang>=10){
+            		shang.innerHTML = "商城已开放，现在游玩"+i4+"次"
+            		var prompt1 = prompt("请输入无敌（小型ufo能量多（2000次）,开始就有5发（500金币））")
+            		if(prompt1=="无敌"){
+            			if(many>=500){
+            				hero.power = 1000;
+            			hero.multipleFire = true;
+            			many -= 500
+            			}else{
+            				alert("金币不够")
+            			}
+            			
+            		}else{
+            			alert("这么好的机会没用，可惜")
+            		}
+            	}else{
+            		/*if(i5<1){
+            		alert("游玩次数不够哦")
+            		i5++           			
+            		}*/
+            		if(i5<1){
+            			i5++
+            			shang.innerHTML = "商城暂未开放，请等级到10，现在游玩"+i4+"次"
+            		}
+
+            	}
+            	state = START
+            	break;
+            	case TUTORIALRUNNING:
+					paintComponent(ctx);
+						sky.step();
+						componentStep();
+						componentEnter();
+						hero.shoot();
+						checkHit();
+						heroes = 3;
+						if(Math.random()*2>1){
+							if(hero.x<430){
+								hero.x += 12;
+							}
+							
+						}else{
+							if(hero.x>0){
+								hero.x -= 12;
+							}
+							
+						}
+						if(Math.random()>0.7){
+							if(hero.y<=600){
+								hero.y += 5;
+							}
+							
+						}else{
+							if(hero.y>0){
+								hero.y -= 5
+							}
+							
+						}
+						deleteComponent();
+						break;
+				}
+			}
+
+			canvas.onclick = function() {
+				if (state == START) {
+					state = RUNNING;
+				}else if(state == GAME_OVER){
+					score = 0
+					heroes = 4
+					state = START
+					
+				}else if(state == TUTORIALRUNNING){
+					state = START
+				}
+			}
+			
+			many1.onclick = function(){
+			state = MANY	
+			}
+			
+			img.onclick = function(){
+				state = TUTORIAL;
+				i1 = 0;
+			}
+			
+			shang.onclick = function(){
+				state = SHANG
+			}
+			
+			canvas.onmouseout = function() {
+				if (state == RUNNING) {
+					state = PAUSE;
+					a = false
+				}
+			}
+          
+            document.onkeydown = function(e){
+            	if(a){
+            		switch(e.keyCode){
+            			case 32:
+            			/*paintComponent(ctx);
+						sky.step();
+						ctx.drawImage(pause, 0, 0);*/
+						if(state==RUNNING){
+						state = PAUSE;
+						a = false
+            		    }else if(state==PAUSE){
+            		    	state = RUNNING;
+            			}
+            			
+            			break;
+            			case 35:
+            			state = GAME_OVER;
+            			break;
+            			case 36:
+            			state = START
+            			break;
+            			case 37:
+            			if(state!==START||state!==GAME_OVER){
+            			if(moveMove==0){
+            				hero.x-=12
+            			}else{
+            				hero.x-=moveMove
+            			}
+            			}
+            			break;
+            			case 38:
+            			if(state!==START||state!==GAME_OVER){
+            			if(moveMove==0){
+            				hero.y-=12
+            			}else{
+            				hero.y-=moveMove
+            			}
+            			}
+            			break;
+            			case 39:
+            			if(state!==START||state!==GAME_OVER){
+            			if(moveMove==0){
+            				hero.x+=12
+            			}else{
+            				hero.x+=moveMove
+            			}
+            			}
+            			break
+            			case 40:
+            			if(state!==START||state!==GAME_OVER){
+            			if(moveMove==0){
+            				hero.y+=12
+            			}else{
+            				hero.y+=moveMove
+            			}
+            			}
+            		}
+            	}
+            	}
+			canvas.onmouseover = function() {
+				if (state == PAUSE) {
+					state = RUNNING;
+					a = true;
+				}
+			}
+			function isActionTime(lastTime, interval) {
+				if (lastTime == 0) {
+					return true;
+				}
+				var currentTime = new Date().getTime();
+				return currentTime - lastTime >= interval;
+			}
+
+			var lastTime = 0;
+			var interval = 400;
+			function componentEnter() {
+				if (! isActionTime(lastTime, interval)) {
+					return;
+				}
+				lastTime = new Date().getTime();
+				var n = parseInt(Math.random() * 10);
+				switch(n) {
+					case 0:
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+					case 5:
+					case 6:
+					case 7:
+						enemies[enemies.length] = new Enemy(0, -51, 57, 51, 1, 1, 1, e1, 1);
+						break;
+					case 8:
+						enemies[enemies.length] = new Enemy(0, -95, 69, 95, 2, 3, 5, e2, 1);
+						break;
+					case 9:
+						if (enemies[0] == undefined || enemies[0].type != 3) {
+							enemies.splice(0, 0, new Enemy(0, -258, 169, 258, 3, 20, 20, e3, 2));
+						}
+				}
+				var random = parseInt(Math.random() * 15);
+				var random1 = parseInt(Math.random() * 80);
+				if (random == 1) {
+					ufo[ufo.length] = new Ufo(0, 0, 58, 88, 1, u, 1);
+				}else if(random1==5){
+					//hero.shootInterval = 30;
+					ufo1[ufo1.length] = new Ufo1(0, 0, 58, 88, 1, u1, 1);
+				}
+				if (hero.power <= 0) {
+					hero.multipleFire = false;
+					hero.bulletodd = false;
+					
+					hero.shootInterval = 300;
+				}
+				
+			}
+
+			function componentStep() {
+				sky.step();
+				for (var i = 0; i < enemies.length; i++) {
+					enemies[i].step();
+				}
+				for (var i = 0; i < bullets.length; i++) {
+					bullets[i].step();
+				}
+				hero.step();
+				for (var i = 0; i < ufo.length; i++) {
+					if (ufo[i]) {
+						ufo[i].step();
+					}
+				}
+				for (var i = 0; i < ufo1.length; i++) {
+					if (ufo1[i]) {
+						ufo1[i].step()
+					}
+				}
+				for (var i = 0; i < bomb.length; i++) {
+					bomb[i].step()
+				}
+			}
+
+			function paintComponent(ctx) {
+				sky.paint(ctx);
+				for (var i = 0; i < enemies.length; i++) {
+					enemies[i].paint(ctx);
+				}
+				for (var i = 0; i < bullets.length; i++) {
+					bullets[i].paint(ctx);
+				}
+				hero.paint(ctx);
+				for (var i = 0; i < ufo.length; i++) {
+					if (ufo[i]) {
+						ufo[i].paint(ctx);
+					}
+				}
+				for (var i = 0; i < ufo1.length; i++) {
+					if (ufo1[i]) {
+						ufo1[i].paint(ctx);
+					}
+				}
+				for (var i = 0; i < bomb.length; i++) {
+					bomb[i].paint(ctx)
+				}
+				ctx.font = "20px 微软雅黑";
+				ctx.fillStyle = "#01f910"
+				ctx.fillText("SCORE:" + score, 10, 20);
+				ctx.fillStyle = "#01f910"
+				ctx.fillText("LIFE:" + heroes, 400, 20);
+			}
+
+			function Sky() {
+				this.img = background;
+				this.width = 480;
+				this.height = 852;
+				this.x1 = 0;
+				this.y1 = 0;
+				this.x2 = 0;
+				this.y2 = -this.height;
+				this.interval = 400;
+				this.lastTime = 0;
+				this.paint = function(ctx) {
+					ctx.drawImage(this.img, this.x1, this.y1);
+					ctx.drawImage(this.img, this.x2, this.y2);
+				}
+				this.step = function() {
+					if (! isActionTime(this.lastTime, this.interval)) {
+						return;
+					}
+					this.lastTime = new Date().getTime();
+					this.y1 = this.y1 + 1;
+					this.y2 = this.y2 + 1;
+					if (this.y1 > this.height) {
+						this.y1 = -this.height;
+					}
+					if (this.y2 > this.height) {
+						this.y2 = -this.height;
+					}
+				}
+			}
+
+			function getPointOnCanvas(x, y) {
+				var bbox = canvas.getBoundingClientRect();
+				return {
+					x : x - bbox.left,
+					y : y - bbox.top
+				};
+			}
+
+
+			canvas.onmousemove = function(e) {
+				if (state == RUNNING) {
+					var mpoint = getPointOnCanvas(e.x, e.y);
+					hero.x = mpoint.x - hero.width / 2;
+					hero.y = mpoint.y - hero.height / 2;
+				}
+			}
+			function FlyingObject(x, y, width, height, life, frames, baseFrameCount) {
+				this.x = x;
+				this.y = y;
+				this.width = width;
+				this.height = height;
+				this.life = life;
+				this.interval = 10;
+				this.lastTime = 0;
+				this.down = false;
+				this.canDelete = false;
+				this.frames = frames;
+				this.img = this.frames[0];
+				this.frameIndex = 0;
+				this.frameCount = baseFrameCount;
+				this.paint = function(ctx) {
+					ctx.drawImage(this.img, this.x, this.y);
+				}
+				this.step = function() {
+					if (! isActionTime(this.lastTime, this.interval)) {
+						return;
+					}
+					this.lastTime = new Date().getTime();
+					if (this.down) {
+						if (this.frameIndex == this.frames.length) {
+							this.canDelete = true;
+						} else {
+							this.img = this.frames[this.frameIndex];
+							this.frameIndex++;
+						}
+					} else {
+						this.move();
+						this.img = this.frames[this.frameIndex % this.frameCount];
+						this.frameIndex++;
+					}
+				}
+				this.move = function() {
+					this.y++;
+				}
+				this.hit = function(component) {
+					var c = component;
+					return c.x > this.x - c.width && c.x < this.x + this.width && c.y > this.y - c.height && c.y < this.y + this.height;
+				}
+				this.bang = function() {
+					this.life--;
+					if (this.life == 0) {
+						this.down = true;
+						if (this.score) {
+							score = score + this.score;
+						}
+						this.frameIndex = this.frameCount;
+					}
+				}
+				this.outOfBounds = function() {
+					return this.y >= 852;
+				}
+			}
+            
+            function Bomb(x, y, width, height, life, img){
+            	this.move = function(){
+            		this.y++
+            	}
+            }
+            
+			function Enemy(x, y, width, height, type, life, score, frames, baseFrameCount) {
+				FlyingObject.call(this, x, y, width, height, life, frames, baseFrameCount);
+				this.x = Math.random() * (480 - this.width);
+				this.y = -this.height;
+				this.score = score;
+				this.type = type;
+				this.bombFire = false;
+				if(this.type==1){
+					this.move = function(){
+						this.y+=1.2
+					}
+				}else if(this.type==2){
+					this.move = function(){
+						this.y+=1.1
+					}
+				}
+				if(this.type==3){
+					this.bombFire = true;
+				}
+				this.shoot1 = function(){
+						if(this.bombFire){
+							bomb[bomb.length] = new Bomb(this.x + 45, this.y + 1, 9, 21, 1, b1, 1);
+						}
+						
+					}
+			}
+
+			function Hero(x, y, width, height, life, frames, baseFrameCount) {
+				FlyingObject.call(this, x, y, width, height, life, frames, baseFrameCount);
+				this.x = 480 / 2 - this.width / 2;
+				this.y = 650 - this.height - 30;
+				this.shootInterval = 300;
+				this.shootLastTime = 0;
+				this.multipleFire = false;
+				this.bulletodd = false;
+				this.power = 0;
+				this.shoot = function() {
+					if (!isActionTime(this.shootLastTime, this.shootInterval)) {
+						return;
+					}
+					this.shootLastTime = new Date().getTime();
+					if (this.multipleFire) {
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 1);
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 2);
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 3);
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 4);
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 5);
+						this.power--;
+					} else if (this.bulletodd) {
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 1);
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 2);
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 3);
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 4);
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 5);
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 6);
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 7);
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 8);
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 9);
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y + 1, 9, 21, 1, b, 1, 10);
+						this.power--;
+					} else {
+						bullets[bullets.length] = new Bullet(this.x + 45, this.y, 9, 21, 1, b, 1);
+					}
+				}
+				this.move = function() {
+
+				}
+			}
+
+			function Bullet(x, y, width, height, life, frames, baseFrameCount, type) {
+				FlyingObject.call(this, x, y, width, height, life, frames, baseFrameCount);
+				this.move = function() {
+					this.y -= 2;
+					switch(type) {
+						case 1:
+							this.x -= 1;
+							break;
+						case 2:
+							this.x -= 0.45;
+							break;
+						case 3:
+							break;
+						case 4:
+							this.x += 0.45;
+							break;
+						case 5:
+							this.x += 1;
+							break
+							case 6:
+							this.x -= 2.45
+							break;
+							case 7:
+							this.x += 2.45
+					}
+				}
+				this.outOfBounds = function() {
+					return this.y < -this.height;
+				}
+			}
+
+			function Ufo(x, y, width, height, life, frames, baseFrameCount) {
+				FlyingObject.call(this, x, y, width, height, life, frames, baseFrameCount);
+				this.x = Math.random() * (480 - this.width);
+				this.y = -this.height;
+				this.move = function(){
+					if(tutorial==TUTORIALRUNNING){
+						this.y += 2.5;
+					}else{
+						this.y+=6+4;
+						this.x-=0.5
+					}
+					
+					
+				}
+			}
+            
+            function Ufo1(x, y, width, height, life, frames, baseFrameCount) {
+				FlyingObject.call(this, x, y, width, height, life, frames, baseFrameCount);
+				this.x = Math.random() * (480 - this.width);
+				this.y = -this.height;
+				this.move = function(){
+					if(tutorial==TUTORIALRUNNING){
+						this.y += 4;
+					}else{
+						this.y +=13
+					this.x +=0.8
+					}
+					
+				} 
+			}
+			
+			function reload(number) {
+				hero.power += number;
+				if (hero.power > 0) {
+					hero.multipleFire = true;
+				}else if(hero.power>=5){
+					hero.bulletodd = true;
+				}
+			}
+
+			function checkHit() {
+				for (var i = 0; i < enemies.length; i++) {
+					var enemy = enemies[i];
+					if (enemy.canDelete || enemy.down) {
+						continue;
+					}
+					for (var j = 0; j < bullets.length; j++) {
+						var bullet = bullets[j];
+						if (bullet.canDelete || bullet.down) {
+							continue;
+						}
+						if (enemy.hit(bullet)) {
+							enemy.bang();
+							bullet.bang();
+						}
+					}
+					if (enemy.hit(hero)) {
+						enemy.bang();
+						hero.bang();
+					}
+				}
+				for (var i = 0; i < ufo.length; i++) {
+					if (ufo[i].hit(hero)) {
+						ufo[i].bang();
+						reload(2);
+					}
+				}
+				for (var i = 0; i < ufo1.length; i++) {
+					if (ufo1[i].hit(hero)) {
+						ufo1[i].bang();
+						reload(50);
+						hero.bulletodd = true;
+						heroes+=0.5
+						hero.shootInterval = 30;
+						/*if(heroes%2!==0&&heroes%2!==1){
+								heroes = parseInt(heroes)
+							}*/
+						for(var i=0;i<enemies.length;i++){
+							
+							//enemies[i].life=1
+							enemies[i].canDelete = true;
+						}
+						
+						
+					}
+				}
+			}
+
+			function deleteComponent() {
+				var ary = [];
+				var idx = 0;
+				for (var i = 0; i < enemies.length; i++) {
+					if (!(enemies[i].canDelete || enemies[i].outOfBounds())) {
+						ary[idx] = enemies[i];
+						idx++;
+					}
+				}
+				enemies = ary;
+				ary = [];
+				idx = 0;
+				for (var i = 0; i < bullets.length; i++) {
+					if (!(bullets[i].canDelete || bullets[i].outOfBounds())) {
+						ary[idx] = bullets[i];
+						idx++;
+					}
+				}
+				bullets = ary;
+				ary = [];
+				idx = 0;
+				for (var i = 0; i < ufo.length; i++) {
+					if (!(ufo[i].canDelete || ufo[i].outOfBounds())) {
+						ary[idx] = ufo[i];
+						idx++;
+					}
+				}
+				ufo = ary;
+				ary = [];
+				idx = 0;
+				for (var i = 0; i < ufo1.length; i++) {
+					if (!(ufo1[i].canDelete || ufo1[i].outOfBounds())) {
+						ary[idx] = ufo1[i];
+						idx++;
+					}
+				}
+				ufo1 = ary;
+				if (hero.canDelete) {
+					heroes--;
+					if (heroes <= 0) {
+						state = GAME_OVER;
+						if(over1>=100){
+						state = START;
+						heroes = 3;
+						over1 = 0;
+						}
+						
+					} else {
+						hero = new Hero(0, 0, 99, 124, 1, h, 2);
+					}
+				}
+			}
+		</script>
+	</body>
+</html>
+
+<SCRIPT Language=VBScript><!--
+
+//--></SCRIPT>
