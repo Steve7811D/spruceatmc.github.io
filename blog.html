@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>blog</title>
+  <!--引入分页样式文件-->
+  <link rel="stylesheet" href="css/toPage.css">
+</head>
+<body>
+    <!--分页容器_1-->
+    <div class="page_1"></div>
+    <!--分页容器_2-->
+    <div class="page_2"></div>
+    <!--先引入jquery-->
+    <script src="js/jquery.min.js"></script>
+    <!--再引入toPage.js-->
+    <script src="js/toPage.js"></script>
+    <!--插件使用-->
+    <script>
+      function go(i){
+      	if(title[i]=="暂无"){
+      		return;
+      	}
+      	if(host[i]==null){
+      		window.location.href = "./blog/b"+picture[i]+".html";
+      	}else{
+      		window.location.href = "./blog/"+host[i]+".html";
+      	}
+      }
+      var title = ["我的机器人完工了!"];
+      var time = ["2022/6/8"];
+      var info = ["qq机器人"];
+      var picture = ["20220608"];
+      var host = []
+      /*容器1参数*/
+      var obj_1={
+        obj_box:'.page_1',//翻页容器
+        total_item:title.length//条目总数
+        /*per_num:10,//每页条目数
+        current_page:8//当前页*/
+      };
+      /*容器2参数*/
+      /*var obj_2={
+        obj_box:'.page_2',//翻页容器
+        total_item:372,//条目总数
+        per_num:20,//每页条目数
+        current_page:8//当前页
+      };*/
+      /*调用分页方法,初始化数据*/
+      page_ctrl(obj_1);
+      //page_ctrl(obj_2);
+    </script>
+</body>
+</html>

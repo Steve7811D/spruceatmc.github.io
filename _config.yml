@@ -1,0 +1,15 @@
+# 关于如何集成:https://www.jianshu.com/p/f5c4633524c7
+# 基于码云的评论系统(https://gitee.com/zhousiwei/giteement)
+giteement:
+  enable: true  # 是否启用码云评论系统
+  # 是否使用官方js(false可以提升访问速度)
+  remote: false
+  redirect_uri: 'https://spruceatmc.gitee.io'   # 应用回调地址(请和配置的第三方应用保持一致)
+  # 不能更改(网上开源项目https://github.com/Rob--W/cors-anywhere作者提供的专门用来跨域服务器的配置)
+  oauth_uri: https://cors-anywhere.herokuapp.com/https://gitee.com/oauth/token
+  giteeID: 'spruceatmc'  # 你的码云账号英文名
+  # 存储评论的 repo name(需要在码云仓库创建公开仓库)
+  repo: 'spruceatmc'
+  gitment_oauth:
+    client_id: 'f4d1e9239bef8ba5e29c2ec1a0c8eaac63b91df2ec6cb79a50df93a7713b7435'           #client ID
+    client_secret: '434f897e8800b140ff62ba44ab6d7348b88c5bb5f03b73d98cca20de8f61aac0'       #client secret
